@@ -1,0 +1,112 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[a4paper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage{secdot}
+\sectiondot{subsection}
+\frenchspacing
+\title{\vspace{-2cm}The mathematics of Zalando's Next Top Analyst problem}
+\date{}
+\author{Miłosz Jerkiewicz}
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+This document contains some notes and mathematical work necessary to compute the probability distributions featuring
+in the problem.
+
+
+\section{Coordinate projection}
+
+The goal of the problem is to find the geographical coordinates \((\mbox{latitude}, \mbox{longitude})\) of the high-probability areas
+and present them in the form of an easy to read map.
+Because the probability distributions used to evaluate \((\mbox{latitude}, \mbox{longitude})\) points have their parameters
+specified in meters and they assume an orthogonal coordinate system, it is necessary to use a projection from one system
+to another. The following projection is provided in the problem statement:
+
+\begin{align*}
+  x(\mbox{lat}, \mbox{lon}) &= 111.323\:(\mbox{lon} - \mbox{sw\_lon})\:\cos(\mbox{sw\_lat}\,\frac{\pi}{180})\ [km]\\
+  y(\mbox{lat}, \mbox{lon}) &= 111.323\:(\mbox{lat} - \mbox{sw\_lat})\ [km]\\
+\end{align*}
+
+Where
+\begin{align*}
+  \mbox{sw\_lat} &= 52.464011\\
+  \mbox{sw\_lon} &= 13.274099
+\end{align*}
+
+are the coordinates of the south-west point of the area of interest.
+
+This projection returns \((X, Y)\) coordinates specified in kilometers. This is a slight inconvenience, because the probability distributions
+have parameters specified im meters. By multiplying both equations by \(1000\) we get the final, ready-to-use equations:
+
+\begin{align*}
+  x(\mbox{lat}, \mbox{lon}) &= 111323\:(\mbox{lon} - \mbox{sw\_lon})\:\cos(\mbox{sw\_lat}\,\frac{\pi}{180})\ [m]\\
+  y(\mbox{lat}, \mbox{lon}) &= 111323\:(\mbox{lat} - \mbox{sw\_lat})\ [m]
+\end{align*}
+
+\section{Log-normal distribution}
+
+The probability density function of the log-normal distribution is given by the following formula:
+
+\begin{equation*}
+f(x) = \frac{1}{x\sigma{\sqrt{2\pi}}}\: e^{-{\frac {\left(\ln x-\mu \right)^{2}}{2\sigma ^{2}}}}
+\end{equation*}
+
+To compute \(f(x)\) at a given point \(x\), we need to know \(\mu\) and \(\sigma\). To compute them, we can use the following information:
+
+\begin{quotation}
+\emph{The distribution's radial profile is log-normal with a mean of 4700m and a mode of 3877m in every direction.}
+\end{quotation}
+
+The starting point are the formulas for the mean and the mode of the log-normal distribution:
+\begin{align}
+  \mbox{mean} &= e\, ^{\mu + \frac{\sigma^2}{2}} \label{eq:mean}\\
+  \mbox{mode} &= e\, ^{\mu - \sigma^2} \label{eq:mode}
+\end{align}
+
+We need to solve this set of equations to get \(\mu\) and \(\sigma\). Logarithming both sides gives:
+\begin{align*}
+  \mu + \frac{\sigma^2}{2} &= \ln(\mbox{mean}) \tag{\ref{eq:mean}'}\\
+  \mu - \sigma^2 &= \ln(\mbox{mode}) \tag{\ref{eq:mode}'}
+\end{align*}
+
+Substracting (\ref{eq:mode}') from (\ref{eq:mean}')
+\begin{align*}
+  \mu + \frac{\sigma^2}{2} - (\mu - \sigma^2) &= \ln(\mbox{mean}) - \ln(\mbox{mode})\\
+  \frac{3}{2}\sigma^2 &= \ln(\mbox{mean}) - \ln(\mbox{mode})
+\end{align*}
+
+And finally:
+\[\sigma = \sqrt{\frac{2}{3}\bigl(\ln(\mbox{mean}) - \ln(\mbox{mode})\bigr)}\tag{\(\sigma\)}\]
+
+Getting back to equation (\ref{eq:mode}'):
+\begin{align*}
+  \mu - \sigma^2 &= \ln(\mbox{mode}) \tag{\ref{eq:mode}'}\\
+  \mu &= \ln(\mbox{mode}) + \sigma^2
+\end{align*}
+
+Plugging the \(\sigma\) computed above:
+\begin{align*}
+  \mu &= \ln(\mbox{mode}) + \frac{2}{3}\left(\ln(\mbox{mean}) - \ln(\mbox{mode})\right)\\
+  \mu &= \ln(\mbox{mode}) + \frac{2}{3}\ln(\mbox{mean}) - \frac{2}{3}\ln(\mbox{mode})\\
+  \mu &= \frac{2}{3}\ln(\mbox{mean}) + \frac{1}{3}\ln(\mbox{mode})
+\end{align*}
+
+And finally:
+\[\mu = \frac{2\ln(\mbox{mean}) + \ln(\mbox{mode})}{3}\tag{\(\mu\)}\]
+
+The end result is the following set of formulas for \(\mu\) and \(\sigma\):
+\begin{align*}
+  \mu &= \frac{2\ln(\mbox{mean}) + \ln(\mbox{mode})}{3}\tag{\(\mu\)}\\
+  \sigma &= \sqrt{\frac{2}{3}\left(\ln(\mbox{mean}) - \ln(\mbox{mode})\right)\tag{\(\sigma\)}}
+\end{align*}
+
+For the given data (\emph{a mean of 4700m and a mode of 3877m}) the values are:
+\begin{align*}
+  \mu &= 8.39115083\\
+  \sigma &= 0.358237212
+\end{align*}
+
+\end{document}
