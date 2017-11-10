@@ -5,6 +5,7 @@
 \usepackage{mathtools}
 \usepackage{physics}
 \usepackage{secdot}
+\usepackage{empheq}
 \sectiondot{subsection}
 \frenchspacing
 \title{\vspace{-2cm}The mathematics of Zalando's Next Top Analyst problem}
@@ -113,64 +114,98 @@ For the given data (\emph{a mean of 4700m and a mode of 3877m}) the values are:
 
 \section{Distance between two points (2 dimensions)}
 
-The distance between points \(p\) and \(q\) is the length of the vector \(\vb{q - p}\):
-\[\abs{\vb{q - p}} = \sqrt{(q_x - p_x)^2 + (q_y - p_y)^2}\]
+The distance between points \(P\) and \(Q\) is the length of the vector \(Q - P\):
+\[\abs{Q - P} = \sqrt{(q_x - p_x)^2 + (q_y - p_y)^2}\]
 It is used to compute the log-normal distribution centered in the Brandenburg Gate.
 
 
 \section{Nearest point on a line (2 dimensions)}
 
-TODO format
+We are given a line \(\overleftrightarrow{KL}\) defined by points \(K\) and \(L\).
+We are also given a point \(P\).
+The objective is to find the point \(N\) on line \(\overleftrightarrow{KL}\)
+that is nearest to the point \(P\).
 
-Given 2 points on a line: \(k\), \(l\) and a point \(p\), find the location on a line that is nearest to the point \(p\).
+The point \(N\) lies on the intersection of the line \(\overleftrightarrow{KL}\)
+and the line \(\overleftrightarrow{PN}\) which has to be normal to \(\overleftrightarrow{KL}\).
+The direction of the line \(\overleftrightarrow{KL}\) is given by the vector
+\begin{equation*}
+\vb{v} = L - K = (l_x - k_x, l_y - k_y)
+\end{equation*}
+The vector normal to \(\vb{v}\) is
+\begin{equation*}
+\vb{n} = (l_y - k_y, -(l_x - k_x)) = (l_y - k_y, k_x - l_x)
+\end{equation*}
+The intersection condition stupulates that:
+\begin{equation*}
+N = K + a\vb{v} = P + b\vb{n}
+\end{equation*}
+which means that the point \(N\) is at the same time equal to the point \(K\) displaced by scaled vector \(\vb{v}\)
+and to the point \(P\) displaced by scaled vector \(\vb{n}\).
 
-vector \(\vb{v} = \vb{l-k}\) \(<lx - kx, ly - ky>\)
+The intersection condition gives the following set of equations (one equation per dimension):
+\begin{empheq}[left=\empheqlbrace]{align*}
+&k_x + a (l_x - k_x) = p_x + b (l_y - k_y)\\
+&k_y + a (l_y - k_y) = p_y + b (k_x - l_x)
+\end{empheq}
+which we can use to derive the formula for \(a\) by eliminating \(b\) and solving the resulting equation:
+\begin{empheq}[left=\empheqlbrace]{align*}
+&k_x + a (l_x - k_x) - p_x = b (l_y - k_y)\\
+&k_y + a (l_y - k_y) - p_y = b (k_x - l_x)
+\end{empheq}
+\begin{empheq}[left=\empheqlbrace]{align*}
+&b = \frac{k_x + a (l_x - k_x) - p_x}{l_y - k_y}\\
+&b = \frac{k_y + a (l_y - k_y) - p_y}{k_x - l_x}
+\end{empheq}
 
-vector normal to \(\vb{v}\) is \(\vb{n} = <ly - ky, -(lx - kx)> = <ly-ky, kx-lx>\)
+\begin{equation*}
+\begin{multlined}
+(k_x - l_x) (k_x + a (l_x - k_x) - p_x) =
+(l_y - k_y) (k_y + a (l_y - k_y) - p_y)
+\end{multlined}
+\end{equation*}
 
-The intersection condition
+\begin{equation*}
+\begin{multlined}
+(k_x - l_x) k_x + (k_x - l_x) a (l_x - k_x) - (k_x - l_x) p_x =\\
+(l_y - k_y) k_y + (l_y - k_y) a (l_y - k_y) - (l_y - k_y) p_y
+\end{multlined}
+\end{equation*}
 
-\[k + a\vb{v} = p + b\vb{n}\]
+\begin{equation*}
+\begin{multlined}
+(k_x - l_x) a (l_x - k_x) - (l_y - k_y) a (l_y - k_y) =\\
+(l_y - k_y) k_y - (l_y - k_y) p_y - (k_x - l_x) k_x + (k_x - l_x) p_x
+\end{multlined}
+\end{equation*}
 
-gives the following set of equations:
-\begin{align*}
-  k_x + a (l_x - k_x) &= p_x + b (l_y - k_y)\\
-  k_y + a (l_y - k_y) &= p_y + b (k_x - l_x)
-\end{align*}
+\begin{equation*}
+\begin{multlined}
+a ((k_x - l_x) (l_x - k_x) - (l_y - k_y) (l_y - k_y)) =\\
+(l_y - k_y) k_y - (l_y - k_y) p_y - (k_x - l_x) k_x + (k_x - l_x) p_x
+\end{multlined}
+\end{equation*}
 
-solve \(a\) = ?
+\begin{equation*}
+  a = \frac{(l_y - k_y)k_y - (l_y - k_y)p_y - (k_x - l_x)k_x + (k_x - l_x)p_x}{(k_x - l_x)(l_x - k_x) - (l_y - k_y)(l_y - k_y)}\\
+\end{equation*}
 
-\begin{align*}
-  k_x + a (l_x - k_x) - p_x &= b (l_y - k_y)\\
-  k_y + a (l_y - k_y) - p_y &= b (k_x - l_x)
-\end{align*}
+\begin{equation*}
+  a = \frac{(l_y - k_y)k_y - (l_y - k_y)p_y - (k_x - l_x)k_x + (k_x - l_x)p_x}{- (k_x - l_x)^2 - (l_y - k_y)^2}\\
+\end{equation*}
 
-\begin{align*}
-  b &= (k_x + a (l_x - k_x) - p_x) / (l_y - k_y)\\
-  b &= (k_y + a (l_y - k_y) - p_y) / (k_x - l_x)
-\end{align*}
+\begin{equation*}
+  a = \frac{(k_x - l_x)(k_x - p_x) + (k_y - l_y)(k_y - p_y)}{(k_x - l_x)^2 + (l_y - k_y)^2}
+\end{equation*}
 
-At this point we can eliminate \(b\):
+The intersection point \(N\) can be now calculated as the point \(K\)
+translated by the appropriately scaled vector \(\vb{v}\):
+\[N = K + a\vb{v}\]
 
-\[(k_x - l_x) (k_x + a (l_x - k_x) - p_x) = (l_y - k_y) (k_y + a (l_y - k_y) - p_y)\]
+This formula is used in the process of computing the normal distribution centered around the satellite path.
 
-\[(k_x - l_x) k_x + (k_x - l_x) a (l_x - k_x) - (k_x - l_x) p_x = (l_y - k_y) k_y + (l_y - k_y) a (l_y - k_y) - (l_y - k_y) p_y\]
-
-\[(k_x - l_x) a (l_x - k_x) - (l_y - k_y) a (l_y - k_y) = (l_y - k_y) k_y - (l_y - k_y) p_y - (k_x - l_x) k_x + (k_x - l_x) p_x\]
-
-\[a [(k_x - l_x) (l_x - k_x) - (l_y - k_y) (l_y - k_y)] = (l_y - k_y) k_y - (l_y - k_y) p_y - (k_x - l_x) k_x + (k_x - l_x) p_x\]
-
-And solve the equation for \(a\):
-
-\begin{align*}
-  a &= \frac{(l_y - k_y)k_y - (l_y - k_y)p_y - (k_x - l_x)k_x + (k_x - l_x)p_x}{(k_x - l_x)(l_x - k_x) - (l_y - k_y)(l_y - k_y)}\\
-  a &= \frac{(l_y - k_y)k_y - (l_y - k_y)p_y - (k_x - l_x)k_x + (k_x - l_x)p_x}{- (k_x - l_x)^2 - (l_y - k_y)^2}\\
-  a &= \frac{(k_x - l_x)(k_x - p_x) + (k_y - l_y)(k_y - p_y)}{(k_x - l_x)^2 + (l_y - k_y)^2}
-\end{align*}
-
-The intersection point:
-
-\[k + a\vb{v}\]
-
+The value of \(a\) can be used to determine whether the point \(N\) is located within
+the segment \(\overline{KL}\) (happens when \(0 \leq a \leq 1\)) or not. This will come handy when computing
+the distance to the river Spree.
 
 \end{document}
