@@ -43,6 +43,26 @@ class Point
   end
 end
 
+class Line
+  attr_reader :k, :l
+
+  def initialize(points)
+    @k = points[0]
+    @l = points[1]
+  end
+
+  def normal_intersection_coefficient(p)
+    raise 'Zero length line' if (k.x - l.x) ** 2 + (l.y - k.y) ** 2 == 0
+    ((k.x - l.x) * (k.x - p.x) + (k.y - l.y) * (k.y - p.y)) / ((k.x - l.x) ** 2 + (l.y - k.y) ** 2)
+  end
+
+  def distance(point)
+    a = normal_intersection_coefficient(point)
+    intersection = Point.new(x: k.x + a * (l.x - k.x), y: k.y + a * (l.y - k.y))
+    intersection.distance(point)
+  end
+end
+
 def lognormal_pdf(point, center_point, mean, mode)
   mu = (2 * Math::log(mean) + Math::log(mode)) / 3
   sigma = Math::sqrt(2 * (Math::log(mean) - Math::log(mode)) / 3)
@@ -57,10 +77,13 @@ def brandenburg_gate_pdf(point)
   lognormal_pdf(point, brandenburg_gate, mean, mode)
 end
 
-satellite_path = [
-  [52.590117, 13.39915],
-  [52.437385, 13.553989]
-]
+# Satellite path is a great circle path between coordinates
+$satellite_path = Line.new(
+  [
+    [52.590117, 13.39915],
+    [52.437385, 13.553989]
+  ].map { |lat, lon| Point.new(lat: lat, lon: lon) }
+)
 
 spree = [
   [52.529198, 13.274099],
@@ -87,6 +110,7 @@ spree = [
 
 def joint_pdf(point)
   brandenburg_gate_pdf(point)
+  #$satellite_path.distance(point)
 end
 
 plot_width = 1550
