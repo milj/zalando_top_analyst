@@ -111,6 +111,44 @@ For the given data (\emph{a mean of 4700m and a mode of 3877m}) the values are:
   \sigma &= 0.358237212
 \end{align*}
 
+\section{Normal distribution}
+
+The probability density function of the normal distribution is given by the following formula:
+
+\[f(x) = \frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-{\frac {(x-\mu )^{2}}{2\sigma ^{2}}}}\]
+
+As it was the case with the log-normal distribution, we need to find \(\mu\) and \(\sigma\). We have the following
+quotes (two different distributions):
+
+\begin{quotation}
+\emph{with 95\% probability she is located within 2400m distance of the satellite's path}
+\end{quotation}
+
+\begin{quotation}
+\emph{The probability at any point is given by a Gaussian function of its shortest distance to the river.
+The function peaks at zero and has 95\% of its total integral within $\pm$2730m}
+\end{quotation}
+
+In each case, \(\mu\) is \(0\) (because the probability density function peaks if the distance
+to the river or the satellite path is \(0\)). What is left is to find the \(\sigma\).
+
+If \(95\%\) of the probability lies in range \(<-x, x>\) (\(x\) is expressed in terms of \(\sigma\), so \(2\) means \(2\sigma\) etc.),
+then the remaining \(5\%\) is symetrically distributed in the ranges \((-\infty, x)\) and \((x, \infty)\), \(2.5\%\) in each.
+This means that for \(x\), the cumulative distribution function reaches \(97.5\%\):
+
+\[\mbox{cdf}(x) = 0.975\]
+
+To find the value of \(x\) we take the inverse of \(\mbox{cdf}\), called the \emph{probit} function. The above equation can
+be rewritten as
+
+\[x = \mbox{probit}(0.975)\]
+
+which is approximately \(1.95996398\). The interpretation: the normal distribution places \(95\%\) of probability
+within the range \(-1.95996398\: \sigma\) and \(1.95996398\: \sigma\).
+The last step is to use the given \(95\%\) probability boundaries (\emph{2400m} and \emph{2730m})
+to obtain \(\sigma\):
+
+\[\sigma = \frac{\mbox{\(95\%\) probability boundary}}{1.95996398}\]
 
 \section{Distance between two points (2 dimensions)}
 
