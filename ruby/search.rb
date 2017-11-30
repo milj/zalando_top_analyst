@@ -77,6 +77,12 @@ def brandenburg_gate_pdf(point)
   lognormal_pdf(point, brandenburg_gate, mean, mode)
 end
 
+def normal_pdf(x, nine_seven_five_percentile_point)
+  mu = 0
+  sigma = nine_seven_five_percentile_point / 1.959963984540
+  (1.0 / Math::sqrt(2 * Math::PI * sigma ** 2)) * Math::exp(-(x - mu) ** 2 / (2 * sigma ** 2))
+end
+
 # Satellite path is a great circle path between coordinates
 $satellite_path = Line.new(
   [
@@ -84,6 +90,13 @@ $satellite_path = Line.new(
     [52.437385, 13.553989]
   ].map { |lat, lon| Point.new(lat: lat, lon: lon) }
 )
+
+# A satellite offers further information: with 95% probability she is located within 2400 m distance of the satellite’s path
+# (assuming a normal probability distribution)
+def satellite_pdf(point)
+  distance = $satellite_path.distance(point)
+  normal_pdf(distance, 2400)
+end
 
 spree = [
   [52.529198, 13.274099],
@@ -109,8 +122,8 @@ spree = [
 ]
 
 def joint_pdf(point)
-  brandenburg_gate_pdf(point)
-  #$satellite_path.distance(point)
+  #brandenburg_gate_pdf(point)
+  satellite_pdf(point)
 end
 
 plot_width = 1550
