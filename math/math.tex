@@ -156,7 +156,6 @@ The distance between points \(P\) and \(Q\) is the length of the vector \(Q - P\
 \[\abs{Q - P} = \sqrt{(q_x - p_x)^2 + (q_y - p_y)^2}\]
 It is used to compute the log-normal distribution centered in the Brandenburg Gate.
 
-
 \section{Nearest point on a line (2 dimensions)}
 
 We are given a line \(\overleftrightarrow{KL}\) defined by points \(K\) and \(L\).
@@ -232,18 +231,30 @@ a ((k_x - l_x) (l_x - k_x) - (l_y - k_y) (l_y - k_y)) =\\
   a = \frac{(l_y - k_y)k_y - (l_y - k_y)p_y - (k_x - l_x)k_x + (k_x - l_x)p_x}{- (k_x - l_x)^2 - (l_y - k_y)^2}\\
 \end{equation*}
 
-\begin{equation*}
-  a = \frac{(k_x - l_x)(k_x - p_x) + (k_y - l_y)(k_y - p_y)}{(k_x - l_x)^2 + (l_y - k_y)^2}
-\end{equation*}
+\begin{equation}
+  a = \frac{(k_x - l_x)(k_x - p_x) + (k_y - l_y)(k_y - p_y)}{(k_x - l_x)^2 + (l_y - k_y)^2}\label{eq:a_coefficient}
+\end{equation}
 
 The intersection point \(N\) can be now calculated as the point \(K\)
 translated by the appropriately scaled vector \(\vb{v}\):
-\[N = K + a\vb{v}\]
+\begin{equation}
+N = K + a\vb{v}\label{eq:intersection_point}
+\end{equation}
 
 This formula is used in the process of computing the normal distribution centered around the satellite path.
 
-The value of \(a\) can be used to determine whether the point \(N\) is located within
-the segment \(\overline{KL}\) (happens when \(0 \leq a \leq 1\)) or not. This will come handy when computing
-the distance to the river Spree.
+\section{Nearest point on a polygonal chain}
+
+The piecewise-linear river Spree forms a \emph{polygonal chain}, mathematically speaking.
+The nearest point on such a chain can be found by locating the nearest point on each line segment and
+taking the nearest of them all.
+
+The nearest point on a particular line segment \(\overline{KL}\)
+is found (almost) the same way as the nearest point on a line \(\overleftrightarrow{KL}\).
+We use the formula (\ref{eq:a_coefficient}) to obtain \(a\).
+If \(0 \leq a \leq 1\) then the point \(N\) from formula (\ref{eq:intersection_point})
+is located within the line segment \(\overline{KL}\) and is the point we look for.
+If \(a < 0\) or \(a > 1\) then the point \(N\) lies outside of the segment. In that case, the nearest point
+is either \(K\) or \(L\). This is easy to determine.
 
 \end{document}
