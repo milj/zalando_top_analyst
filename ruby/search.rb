@@ -56,10 +56,29 @@ class Line
     ((k.x - l.x) * (k.x - p.x) + (k.y - l.y) * (k.y - p.y)) / ((k.x - l.x) ** 2 + (l.y - k.y) ** 2)
   end
 
-  def distance(point)
+  def distance(point, crop_to_segment = false)
     a = normal_intersection_coefficient(point)
+    if crop_to_segment && (a < 0  || a > 1)
+      return [k.distance(point), @l.distance(point)].min
+    end
     intersection = Point.new(x: k.x + a * (l.x - k.x), y: k.y + a * (l.y - k.y))
     intersection.distance(point)
+  end
+end
+
+class PolygonalChain
+  def initialize(points)
+    @points = points
+  end
+
+  def distance(p)
+    segments = []
+    i = 0
+    while i < @points.length - 1
+      segments << Line.new([@points[i], @points[i + 1]])
+      i += 1
+    end
+    segments.map { |segment| segment.distance(p, true) }.min
   end
 end
 
@@ -98,32 +117,44 @@ def satellite_pdf(point)
   normal_pdf(distance, 2400)
 end
 
-spree = [
-  [52.529198, 13.274099],
-  [52.531835, 13.29234],
-  [52.522116, 13.298541],
-  [52.520569, 13.317349],
-  [52.524877, 13.322434],
-  [52.522788, 13.329],
-  [52.517056, 13.332075],
-  [52.522514, 13.340743],
-  [52.517239, 13.356665],
-  [52.523063, 13.372158],
-  [52.519198, 13.379453],
-  [52.522462, 13.392328],
-  [52.520921, 13.399703],
-  [52.515333, 13.406054],
-  [52.514863, 13.416354],
-  [52.506034, 13.435923],
-  [52.496473, 13.461587],
-  [52.487641, 13.483216],
-  [52.488739, 13.491456],
-  [52.464011, 13.503386]
-]
+# River Spree can be approximated as piecewise linear between the following coordinates:
+$spree = PolygonalChain.new(
+  [
+    [52.529198, 13.274099],
+    [52.531835, 13.29234],
+    [52.522116, 13.298541],
+    [52.520569, 13.317349],
+    [52.524877, 13.322434],
+    [52.522788, 13.329],
+    [52.517056, 13.332075],
+    [52.522514, 13.340743],
+    [52.517239, 13.356665],
+    [52.523063, 13.372158],
+    [52.519198, 13.379453],
+    [52.522462, 13.392328],
+    [52.520921, 13.399703],
+    [52.515333, 13.406054],
+    [52.514863, 13.416354],
+    [52.506034, 13.435923],
+    [52.496473, 13.461587],
+    [52.487641, 13.483216],
+    [52.488739, 13.491456],
+    [52.464011, 13.503386]
+  ].map { |lat, lon| Point.new(lat: lat, lon: lon) }
+)
+
+# The candidate is likely to be close to the river Spree.
+# The probability at any point is given by a Gaussian function of its shortest distance to the river.
+# The function peaks at zero and has 95% of its total integral within +/-2730m.
+def spree_pdf(point)
+  distance = $spree.distance(point)
+  normal_pdf(distance, 2730)
+end
 
 def joint_pdf(point)
   #brandenburg_gate_pdf(point)
-  satellite_pdf(point)
+  #satellite_pdf(point)
+  spree_pdf(point)
 end
 
 plot_width = 1550

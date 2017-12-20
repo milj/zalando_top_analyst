@@ -2,7 +2,7 @@
 # gnuplot -e "filename='path/to/data/file.dat'" plot.gp
 
 set terminal pngcairo size 1550,1148
-set output 'satellite_pdf.png'
+set output 'spree_pdf.png'
 
 # to combine PDF plot with the map of Berlin
 set multiplot
