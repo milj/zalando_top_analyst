@@ -150,6 +150,18 @@ to obtain \(\sigma\):
 
 \[\sigma = \frac{\mbox{\(95\%\) probability boundary}}{1.95996398}\]
 
+\section{Combining probability distributions}
+
+Consider the following problem: we are given three probability distributions that describe the random variable \(X\).
+The distributions come from independent, reliable observers \(A\), \(B\) and \(C\).
+The question is, what is the true distribution of~\(X\)?
+In other words, how can we combine the measured distributions to obtain the best approximation of the distribution of \(X\)?
+
+What we are looking for is the \emph{joint distribution} \(P(x_A, x_B, x_C)\). It is the probability that \(A\) observes \(x_A\)
+while at the same time \(B\) observes \(x_B\) and \(C\) observes \(x_C\). The observers make their observations independently,
+therefore \(P(x_A, x_B, x_C) = P(x_A)P(x_B)P(x_C)\). This means that the observed probability distributions can be
+combined into one by multiplying them together.
+
 \section{Distance between two points (2 dimensions)}
 
 The distance between points \(P\) and \(Q\) is the length of the vector \(Q - P\):
