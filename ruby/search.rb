@@ -152,9 +152,7 @@ def spree_pdf(point)
 end
 
 def joint_pdf(point)
-  #brandenburg_gate_pdf(point)
-  #satellite_pdf(point)
-  spree_pdf(point)
+  brandenburg_gate_pdf(point) * satellite_pdf(point) * spree_pdf(point)
 end
 
 plot_width = 1550
