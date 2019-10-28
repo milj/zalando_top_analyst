@@ -158,17 +158,46 @@ end
 plot_width = 1550
 plot_height = 1148
 
-y = 0
-while y < plot_height
-  x = 0
-  while x < plot_width
-    lat = $min_lat + (y * ($max_lat - $min_lat)) / plot_height
-    lon = $min_lon + (x * ($max_lon - $min_lon)) / plot_width
-    point = Point.new(lat: lat, lon: lon)
-    pdf = joint_pdf(point)
-    puts sprintf('%9.7f %9.7f %e', lat, lon, pdf)
-    x += 1
+points = []
+
+open('joint_pdf.dat', 'w') do |file|
+  y = 0
+  while y < plot_height
+    x = 0
+    while x < plot_width
+      lat = $min_lat + (y * ($max_lat - $min_lat)) / plot_height
+      lon = $min_lon + (x * ($max_lon - $min_lon)) / plot_width
+      point = Point.new(lat: lat, lon: lon)
+      pdf = joint_pdf(point)
+      points << [point, pdf]
+      file.puts sprintf('%9.7f %9.7f %e', lat, lon, pdf)
+      x += 1
+    end
+    y += 1
+    file.puts "\n"
   end
-  y += 1
-  puts "\n"
 end
+
+sorted = points.sort{ |a, b| a[1] <=> b[1] }
+
+total = sorted.sum{ |a| a[1] }
+
+contour_levels = {
+  5  => nil,
+  20 => nil,
+  50 => nil,
+  80 => nil,
+  95 => nil,
+}
+
+running_sum = 0
+sorted.each do |point, pdf|
+  running_sum += pdf
+  contour_levels.each do |confidence, level|
+    if !level && running_sum > ((100 - confidence) / 100.0) * total
+      contour_levels[confidence] = pdf
+    end
+  end
+end
+
+puts contour_levels

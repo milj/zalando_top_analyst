@@ -12,3 +12,6 @@ Second, there is no numpy/scipy equivalent for Ruby so I will have to stay "clos
 hopefully get a deep understanding of the problem and all the little steps that lead to the
 search area plotted on a map.
 
+Solution:
+
+![Plot](https://raw.githubusercontent.com/milj/zalando_top_analyst/master/gnuplot/plots/joint_pdf_with_confidence_interval_contours.png)
